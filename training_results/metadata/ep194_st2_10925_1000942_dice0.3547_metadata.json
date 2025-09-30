@@ -1,0 +1,34 @@
+{
+  "episode": 194,
+  "step": 2,
+  "dice_score": 0.35466125203741383,
+  "iou_score": 0.21555516123771667,
+  "case_id": "10925_1000942",
+  "patient_id": "10925",
+  "timestamp": "2025-06-06T20:11:12.612285",
+  "files": {
+    "prediction": "ep194_st2_10925_1000942_dice0.3547_pred.nii.gz",
+    "ground_truth": "ep194_st2_10925_1000942_dice0.3547_gt.nii.gz",
+    "volumes": [
+      "ep194_st2_10925_1000942_dice0.3547_adc.nii.gz",
+      "ep194_st2_10925_1000942_dice0.3547_hbv.nii.gz",
+      "ep194_st2_10925_1000942_dice0.3547_t2w.nii.gz"
+    ]
+  },
+  "statistics": {
+    "pred_mask_stats": {
+      "mean": 0.00286102294921875,
+      "std": 0.053411960242091786,
+      "min": 0.0,
+      "max": 1.0,
+      "sum": 6000.0
+    },
+    "gt_mask_stats": {
+      "mean": 0.0031464046332985163,
+      "std": 0.0520065538585186,
+      "min": 0.0,
+      "max": 1.0,
+      "sum": 6598.48876953125
+    }
+  }
+}

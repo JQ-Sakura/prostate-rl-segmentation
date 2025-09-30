@@ -1,0 +1,39 @@
+=== Cancer Region Detection Model Evaluation Report ===
+
+Overall Metrics:
+region_score: 0.0000
+steps_taken: 0.0000
+current_iou: 0.0000
+best_iou: 0.0000
+episode_iou_history: 0.0000
+invalid_action: 1.0000
+dice: 0.0000
+avg_dice: 0.0000
+best_dice: 0.0000
+total_reward: -0.5000
+
+Individual Case Metrics:
+
+Case: patient1
+region_score: 0.0000
+steps_taken: 0.0000
+current_iou: 0.0000
+best_iou: 0.0000
+episode_iou_history: 0.0000 (averaged)
+invalid_action: 1.0000
+dice: 0.0000
+avg_dice: 0.0000
+best_dice: 0.0000
+total_reward: -0.5000
+
+Case: patient2
+region_score: 0.0000
+steps_taken: 0.0000
+current_iou: 0.0000
+best_iou: 0.0000
+episode_iou_history: 0.0000 (averaged)
+invalid_action: 1.0000
+dice: 0.0000
+avg_dice: 0.0000
+best_dice: 0.0000
+total_reward: -0.5000
