@@ -52,9 +52,14 @@ pip install numpy scipy torch torchvision torchaudio nibabel scikit-image scikit
   - `evaluation/data/`: Example test and GT data structure
 - `training_results/`: Saved predictions, GT, metadata, and volumes
 - `surrogate_network_weights/`: Extracted UNet backbone weights for standalone usage
-  - `unet_backbone_weights.pth`: Pre-trained UNet weights (115 tensors)
+  - `unet_backbone_weights.pth`: Pre-trained UNet weights (115 tensors, 37MB)
   - `weights_summary.txt`: Detailed weight tensor summary
   - `README.md`: Usage instructions and architecture details
+- `surrogate_network_weights_chunks/`: Split weights for easy upload (each <25MB)
+  - `unet_weights_part_01.pth`: First part (22.5MB, 108 tensors)
+  - `unet_weights_part_02.pth`: Second part (13.5MB, 7 tensors)
+  - `reconstruct_weights.py`: Script to rebuild original weights
+  - `README.md`: Chunk reconstruction instructions
 - `configs/`: High-level configs
 
 ## Quick Start
@@ -110,6 +115,36 @@ git lfs ls-files
 - Predictions, ground truths, and metadata are stored under `training_results/`.
 - Use `view_saved_results.py` to inspect saved runs.
 - `README_result_saver.md` describes how results are recorded.
+
+## Using Pre-trained Weights
+
+The repository includes pre-trained UNet backbone weights in two formats:
+
+### Option 1: Full Weights File
+- **Location**: `surrogate_network_weights/unet_backbone_weights.pth` (37MB)
+- **Usage**: Direct loading (requires Git LFS)
+
+### Option 2: Split Weights (Recommended for Upload)
+- **Location**: `surrogate_network_weights_chunks/` (each part <25MB)
+- **Reconstruction**:
+  ```bash
+  python surrogate_network_weights_chunks/reconstruct_weights.py
+  ```
+- **Benefits**: Easy upload to GitHub, no size restrictions
+
+### Load Weights in Code
+```python
+import torch
+from rl_module.models.unet3d import UNet3D
+
+# Load weights
+weights = torch.load('surrogate_network_weights/unet_backbone_weights.pth', map_location='cpu')
+
+# Create model
+model = UNet3D(in_channels=6, base_filters=32, num_levels=4, use_se=True)
+model.load_state_dict(weights, strict=False)
+print('UNet model loaded successfully!')
+```
 
 ## Configuration
 
