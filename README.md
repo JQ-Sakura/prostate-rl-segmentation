@@ -1,4 +1,19 @@
-# Prostate Cancer Segmentation with Reinforcement Learning and 3D U-Net
+# Promptable segmentation enables minimal-effort expert-level prostate cancer delineation
+
+## Authors
+
+Junqing Yang¹, Natasha Thorley¹,², Ahmed Nadeem Abbasi³, Shonit Punwani¹,², Zion Tse⁴, Yipeng Hu¹, Shaheer U. Saeed¹,⁴*
+
+### Affiliations
+
+¹ UCL Hawkes Institute; Department of Medical Physics and Biomedical Engineering, University College London, UK  
+² Centre of Medical Imaging, University College London, UK  
+³ Department of Oncology, Aga Khan University Hospital, Pakistan  
+⁴ Centre for Bioengineering; School of Engineering and Materials Science, Queen Mary University of London, UK  
+
+*Corresponding author: shaheer.saeed@qmul.ac.uk
+
+## About
 
 This repository contains code for training and evaluating a reinforcement-learning-assisted 3D medical image segmentation model. It includes:
 
@@ -15,13 +30,6 @@ This repository contains code for training and evaluating a reinforcement-learni
 - GPU: CUDA-capable GPU recommended for training
 
 Install Python dependencies (create a virtual environment if desired):
-
-```bash
-# from repo root
-pip install -r requirements.txt
-```
-
-If `requirements.txt` is not yet present, install common dependencies manually:
 
 ```bash
 pip install numpy scipy torch torchvision torchaudio nibabel scikit-image scikit-learn tqdm pyyaml matplotlib SimpleITK
@@ -43,6 +51,10 @@ pip install numpy scipy torch torchvision torchaudio nibabel scikit-image scikit
   - `evaluation/visualization.py`: Rendering utilities
   - `evaluation/data/`: Example test and GT data structure
 - `training_results/`: Saved predictions, GT, metadata, and volumes
+- `surrogate_network_weights/`: Extracted UNet backbone weights for standalone usage
+  - `unet_backbone_weights.pth`: Pre-trained UNet weights (115 tensors)
+  - `weights_summary.txt`: Detailed weight tensor summary
+  - `README.md`: Usage instructions and architecture details
 - `configs/`: High-level configs
 
 ## Quick Start
@@ -63,6 +75,35 @@ python evaluation/evaluate.py --results_dir training_results --gt_dir evaluation
 ```
 
 Common optional flags can be viewed with `-h` on each script.
+
+## Git LFS Setup
+
+This repository uses Git LFS (Large File Storage) to manage large model files:
+
+- **Pre-trained weights**: `surrogate_network_weights/unet_backbone_weights.pth` (37MB)
+- **Medical images**: `.nii.gz` files in evaluation data
+
+### First-time setup:
+```bash
+# Install Git LFS (if not already installed)
+git lfs install
+
+# Clone the repository
+git clone https://github.com/yourusername/prostate-rl-segmentation.git
+cd prostate-rl-segmentation
+
+# Pull large files
+git lfs pull
+```
+
+### For existing repositories:
+```bash
+# Pull latest LFS files
+git lfs pull
+
+# Check LFS file status
+git lfs ls-files
+```
 
 ## Saving and Viewing Results
 
@@ -88,38 +129,27 @@ python evaluation/evaluate.py \
   --report_file evaluation/results/evaluation_report.txt
 ```
 
-## GitHub: How to Push This Repository
+## Results
 
-If you’re using GitHub CLI (recommended):
+### Performance Comparison
 
-```bash
-# initialize (if not already)
-git init
-git add .
-git commit -m "Initial commit"
+| Model | PROMIS | PICAI |
+|-------|--------|-------|
+| SAM | 0.236 ± 0.107 | 0.294 ± 0.132 |
+| MedSAM | 0.267 ± 0.138 | 0.342 ± 0.142 |
+| Combiner | 0.330 ± 0.180 | 0.469 ± 0.156 |
+| T2-predictor | 0.339 ± 0.192 | 0.394 ± 0.141 |
+| UniverSeg | 0.307 ± 0.216 | 0.351 ± 0.154 |
+| UNet | 0.327 ± 0.198 | 0.426 ± 0.153 |
+| nnUNet | 0.414 ± 0.201 | 0.461 ± 0.137 |
+| Swin-UNeTr | 0.427 ± 0.185 | 0.477 ± 0.133 |
+| Human | 0.531 ± 0.941 | - |
+| **RL-PromptSeg** | **0.526 ± 0.112** | **0.566 ± 0.139** |
 
-# create and push repo (public)
-gh repo create --public --source . --remote origin --push
-```
+**RL-PromptSeg** significantly outperforms the previous state-of-the-art fully-automated method Swin-UNeTr by 9.9% and 8.9% percentage points on PROMIS and PICAI datasets respectively, while showing comparable performance to human observers.
 
-Without GitHub CLI, create a new repo on GitHub via the web UI, then:
+### Qualitative Results
 
-```bash
-git remote add origin https://github.com/<YOUR_USERNAME>/<REPO_NAME>.git
-git branch -M main
-git push -u origin main
-```
+![Samples from PROMIS segmented using our RL-PromptSeg approach](Samples%20from%20PROMIS%20segmented%20using%20our%20RL-PromptSeg%20approach.png)
 
-## Collaborators
-
-Add collaborator `s-sd` with write access using GitHub CLI:
-
-```bash
-gh repo add-collaborator s-sd --permission push
-```
-
-Alternatively, use the GitHub web UI: Settings → Collaborators → Add people → `s-sd` or invite by email `shaheersd@gmail.com`.
-
-## License
-
-Provide your chosen license here (e.g., MIT). If unsure, consider MIT for permissive use.
+Visual comparison showing RL-PromptSeg predictions alongside ground truth annotations on PROMIS dataset samples. The model successfully identifies lesion locations and general extent, achieving a 10X reduction in annotation time (131 seconds vs 1093 seconds per case) while maintaining expert-level accuracy.
